@@ -8,8 +8,6 @@ services:
       - 27017:27017
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: secret
       MONGO_INITDB_DATABASE: coinapp
     healthcheck:
       test: echo 'db.runCommand({serverStatus:1}).ok' | mongo admin -u root -p secret --quiet | grep 1
@@ -29,6 +27,8 @@ services:
     depends_on:
       coinapp-db:
         condition: service_healthy
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://coinapp-db:27017/coinapp
     env_file:
       - .env
     networks:
