@@ -1,0 +1,39 @@
+version: '3.5'
+
+services:
+
+  coinapp-db:
+    image: mongo:3.6
+    ports:
+      - 27017:27017
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: secret
+      MONGO_INITDB_DATABASE: coinapp
+    healthcheck:
+      test: echo 'db.runCommand({serverStatus:1}).ok' | mongo admin -u root -p secret --quiet | grep 1
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    networks:
+      - localcoinapp
+
+  coinapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      coinapp-db:
+        condition: service_healthy
+    env_file:
+      - .env
+    networks:
+      - localcoinapp
+
+networks:
+  localcoinapp:
+    driver: bridge
