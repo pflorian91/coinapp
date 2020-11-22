@@ -1,14 +1,24 @@
 # Coinapp 
 
-How to run
+#### How to run the application
 > docker-compose up
 
-Change environment in .env file
+#### How to change the environment
+Use the `.env` file in the root
 - `default` uses in-memory DB
 - `mongo` uses the MongoDB
 
-Run the tests 
+#### How to run the provided tests 
 > newman run LND-Web-API.postman-collection.json
 
-TODO
- Instructions to see coverage
+#### To run the JUnit tests
+> cd domain
+
+> mvn test
+
+#### How to see reports
+> cd domain
+
+> mvn site
+
+Open domain/target/site/index.html in a browser and navigate to Project Reports. See Surefire Report
