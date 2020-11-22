@@ -1,10 +1,14 @@
+# Coinapp 
 
-chceck tiwh local post office 
+How to run
+> docker-compose up
 
-1. Add tests
-2. Add extra layer for repository
-3. Test with other data store (parametrize)
-4. Docker compose
-5. Extra module
+Change environment in .env file
+- `default` uses in-memory DB
+- `mongo` uses the MongoDB
 
-6. Instructions to see coverage
+Run the tests 
+> newman run LND-Web-API.postman-collection.json
+
+TODO
+ Instructions to see coverage
