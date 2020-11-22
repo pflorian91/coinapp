@@ -5,8 +5,8 @@ import static coinapp.domain.model.TransactionStatus.REJECTED;
 
 import coinapp.application.dto.WalletDto;
 import coinapp.application.service.WalletMapper;
+import coinapp.application.service.WalletServiceWrapper;
 import coinapp.domain.model.Wallet;
-import coinapp.domain.service.WalletService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,7 +33,7 @@ public class WalletController {
   private Logger logger = Logger.getLogger(WalletController.class.getName());
 
   @Autowired
-  private WalletService walletService;
+  private WalletServiceWrapper walletServiceWrapper;
 
   @Autowired
   private WalletMapper walletMapper;
@@ -42,7 +42,7 @@ public class WalletController {
   public ResponseEntity<WalletDto> getWallet(@PathVariable("walletId") final String walletId) {
     logger.log(Level.INFO, "Query wallet {0}", walletId);
 
-    return walletService.findWalletById(walletId)
+    return walletServiceWrapper.findWalletById(walletId)
         .map(wallet -> ResponseEntity.ok(walletMapper.toDto(wallet)))
         .orElseGet(() -> ResponseEntity.notFound().build());
   }
@@ -53,7 +53,7 @@ public class WalletController {
 
     walletDto.setId(walletId);
 
-    Wallet wallet = walletService.creditWallet(walletMapper.fromDto(walletDto));
+    Wallet wallet = walletServiceWrapper.creditWallet(walletMapper.fromDto(walletDto));
 
     return getResponse(wallet);
   }
@@ -64,7 +64,7 @@ public class WalletController {
 
     walletDto.setId(walletId);
 
-    Wallet wallet = walletService.debitWallet(walletMapper.fromDto(walletDto));
+    Wallet wallet = walletServiceWrapper.debitWallet(walletMapper.fromDto(walletDto));
 
     return getResponse(wallet);
   }

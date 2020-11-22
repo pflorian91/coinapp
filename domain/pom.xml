@@ -11,10 +11,19 @@
   </parent>
 
   <artifactId>coinapp.domain</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Project module - domain</name>
   <description>Coin domain module</description>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
 
   <reporting>
     <plugins>

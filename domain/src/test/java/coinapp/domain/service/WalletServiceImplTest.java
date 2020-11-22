@@ -5,40 +5,42 @@ import static coinapp.domain.model.TransactionStatus.ACCEPTED;
 import static coinapp.domain.model.TransactionStatus.CREATED;
 import static coinapp.domain.model.TransactionStatus.REJECTED;
 import static coinapp.domain.model.Wallet.WalletBuilder.aWallet;
+import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static java.util.Optional.of;
 
-import coinapp.domain.model.Wallet;
-import coinapp.domain.repository.WalletRepository;
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+
+import coinapp.domain.model.Wallet;
+import coinapp.domain.repository.WalletRepository;
 
 /**
  * WalletServiceTest
  *
  * @author Florian Popa fpopa1991@gmail.com
  */
-@ExtendWith(MockitoExtension.class)
-public class WalletServiceTest {
+public class WalletServiceImplTest {
 
   private final String transactionId = "1a123-aca12-as123";
 
   private final String walletId = "a1-b2-3ce";
 
-  @InjectMocks
-  private WalletService walletService;
+  private WalletServiceImpl walletServiceImpl;
 
-  @Mock
   private WalletRepository walletRepository;
+
+  @BeforeEach
+  void setUp() {
+    walletRepository = Mockito.mock(WalletRepository.class);
+    walletServiceImpl = new WalletServiceImpl(walletRepository);
+  }
 
   @Test
   public void testGetWalletBalance() {
@@ -56,7 +58,7 @@ public class WalletServiceTest {
 
     when(walletRepository.findById(walletId)).thenReturn(of(givenWallet));
 
-    Optional<Wallet> result = walletService.findWalletById(walletId);
+    Optional<Wallet> result = walletServiceImpl.findWalletById(walletId);
 
     assertThat(result.get()).isEqualTo(givenWallet);
   }
@@ -65,7 +67,7 @@ public class WalletServiceTest {
   public void testGetNonExistingWallet() {
     when(walletRepository.findById(walletId)).thenReturn(Optional.empty());
 
-    Optional<Wallet> result = walletService.findWalletById(walletId);
+    Optional<Wallet> result = walletServiceImpl.findWalletById(walletId);
 
     assertThat(result.isEmpty()).isTrue();
   }
@@ -80,7 +82,7 @@ public class WalletServiceTest {
 
     when(walletRepository.findById(walletId)).thenReturn(Optional.empty());
 
-    Wallet result = walletService.creditWallet(givenWallet);
+    Wallet result = walletServiceImpl.creditWallet(givenWallet);
 
     verify(walletRepository).save(givenWallet);
     assertThat(result.getTransaction().getStatus()).isEqualTo(CREATED);
@@ -102,7 +104,7 @@ public class WalletServiceTest {
 
     when(walletRepository.findById(walletId)).thenReturn(Optional.of(existingWallet));
 
-    Wallet result = walletService.creditWallet(givenWallet);
+    Wallet result = walletServiceImpl.creditWallet(givenWallet);
 
     assertThat(result.getTransaction().getStatus()).isEqualTo(ACCEPTED);
     verify(walletRepository, Mockito.never()).save(existingWallet);
@@ -126,7 +128,7 @@ public class WalletServiceTest {
 
     when(walletRepository.findById(walletId)).thenReturn(Optional.of(existingWallet));
 
-    Wallet result = walletService.creditWallet(givenWallet);
+    Wallet result = walletServiceImpl.creditWallet(givenWallet);
 
     assertThat(result.getVersion()).isEqualTo(2);
     assertThat(result.getCoins()).isEqualTo(2000);
@@ -145,7 +147,7 @@ public class WalletServiceTest {
 
     when(walletRepository.findById(walletId)).thenReturn(Optional.empty());
 
-    Wallet result = walletService.debitWallet(givenWallet);
+    Wallet result = walletServiceImpl.debitWallet(givenWallet);
 
     assertThat(result.getTransaction().getStatus()).isEqualTo(REJECTED);
   }
@@ -165,7 +167,7 @@ public class WalletServiceTest {
 
     when(walletRepository.findById(walletId)).thenReturn(Optional.of(existingWallet));
 
-    Wallet result = walletService.debitWallet(givenWallet);
+    Wallet result = walletServiceImpl.debitWallet(givenWallet);
 
     assertThat(result.getTransaction().getStatus()).isEqualTo(ACCEPTED);
     assertThat(result).isEqualTo(existingWallet);
@@ -189,7 +191,7 @@ public class WalletServiceTest {
 
     when(walletRepository.findById(walletId)).thenReturn(Optional.of(existingWallet));
 
-    Wallet result = walletService.debitWallet(givenWallet);
+    Wallet result = walletServiceImpl.debitWallet(givenWallet);
 
     assertThat(result.getTransaction().getStatus()).isEqualTo(REJECTED);
     assertThat(result).isEqualTo(existingWallet);
@@ -213,7 +215,7 @@ public class WalletServiceTest {
 
     when(walletRepository.findById(walletId)).thenReturn(Optional.of(existingWallet));
 
-    Wallet result = walletService.debitWallet(givenWallet);
+    Wallet result = walletServiceImpl.debitWallet(givenWallet);
 
     assertThat(result.getVersion()).isEqualTo(3);
     assertThat(result.getCoins()).isEqualTo(0);
