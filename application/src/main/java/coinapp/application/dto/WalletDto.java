@@ -38,23 +38,21 @@ public class WalletDto {
         return transactionId;
     }
 
-    public void setTransactionId(String transactionId) {
-        this.transactionId = transactionId;
-    }
-
     public int getVersion() {
         return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
     }
 
     public int getCoins() {
         return coins;
     }
 
-    public void setCoins(int coins) {
-        this.coins = coins;
+    @Override
+    public String toString() {
+        return "WalletDto{" +
+            "id='" + id + '\'' +
+            ", transactionId='" + transactionId + '\'' +
+            ", version=" + version +
+            ", coins=" + coins +
+            '}';
     }
 }
