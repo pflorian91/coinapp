@@ -1,11 +1,14 @@
 package coinapp.application.service;
 
+import static coinapp.domain.model.Transaction.TransactionBuilder.aTransaction;
+import static coinapp.domain.model.Wallet.WalletBuilder.aWallet;
+
+import org.springframework.stereotype.Service;
+
 import coinapp.application.dto.WalletDto;
 import coinapp.application.entity.WalletEntity;
 import coinapp.domain.model.Transaction;
 import coinapp.domain.model.Wallet;
-
-import org.springframework.stereotype.Service;
 
 /**
  * WalletMapper
@@ -15,23 +18,39 @@ import org.springframework.stereotype.Service;
 @Service
 public class WalletMapper {
 
-    public Wallet fromDto(WalletDto dto) {
-        // FIXME use builder
-        Transaction transaction = new Transaction(null, dto.getTransactionId());
-        return new Wallet(dto.getId(), transaction, dto.getVersion(), dto.getCoins());
-    }
+  public Wallet fromDto(WalletDto dto) {
+    return aWallet()
+        .withId(dto.getId())
+        .withTransaction(
+            aTransaction()
+                .withStatus(null)
+                .withId(dto.getTransactionId())
+                .build()
+        )
+        .withVersion(dto.getVersion())
+        .withCoins(dto.getCoins())
+        .build();
+  }
 
-    public WalletDto toDto(Wallet wallet) {
-        // FIXME use builder
-        return new WalletDto(wallet.getId(), wallet.getTransaction().getId(), wallet.getVersion(), wallet.getCoins());
-    }
+  public WalletDto toDto(Wallet wallet) {
+    return new WalletDto(wallet.getId(), wallet.getTransaction().getId(), wallet.getVersion(), wallet.getCoins());
+  }
 
-    public Wallet fromEntity(WalletEntity entity) {
-        Transaction transaction = new Transaction(null, entity.getTransactionId());
-        return new Wallet(entity.getId(), transaction, entity.getVersion(), entity.getCoins());
-    }
+  public Wallet fromEntity(WalletEntity entity) {
+      return aWallet()
+          .withId(entity.getId())
+          .withTransaction(
+              aTransaction()
+                  .withStatus(null)
+                  .withId(entity.getTransactionId())
+                  .build()
+          )
+          .withVersion(entity.getVersion())
+          .withCoins(entity.getCoins())
+          .build();
+  }
 
-    public WalletEntity toEntity(Wallet wallet) {
-        return new WalletEntity(wallet.getId(), wallet.getTransaction().getId(), wallet.getVersion(), wallet.getCoins());
-    }
+  public WalletEntity toEntity(Wallet wallet) {
+    return new WalletEntity(wallet.getId(), wallet.getTransaction().getId(), wallet.getVersion(), wallet.getCoins());
+  }
 }

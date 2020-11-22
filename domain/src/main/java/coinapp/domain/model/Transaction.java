@@ -11,7 +11,7 @@ public class Transaction {
 
   private String id;
 
-  public Transaction(TransactionStatus status, String id) {
+  private Transaction(TransactionStatus status, String id) {
     this.status = status;
     this.id = id;
   }

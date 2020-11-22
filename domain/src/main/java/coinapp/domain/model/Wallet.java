@@ -7,15 +7,14 @@ package coinapp.domain.model;
  */
 public class Wallet {
 
-  private String id;
+  private final String id;
 
-  private Transaction transaction;
+  private final Transaction transaction;
 
   private int version;
 
   private int coins;
 
-  // FIXME make private, remove setters, make fields final
   public Wallet(String id, Transaction transaction, int version, int coins) {
     this.id = id;
     this.transaction = transaction;

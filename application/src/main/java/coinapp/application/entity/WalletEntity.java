@@ -25,7 +25,6 @@ public class WalletEntity {
     private String transactionId;
 
     @Column
-    // FIXME what is with the version?? increments with each transaction or??
     private int version;
 
     @Column
