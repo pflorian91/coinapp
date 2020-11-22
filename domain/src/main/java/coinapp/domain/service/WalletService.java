@@ -4,13 +4,13 @@ import static coinapp.domain.model.TransactionStatus.ACCEPTED;
 import static coinapp.domain.model.TransactionStatus.CREATED;
 import static coinapp.domain.model.TransactionStatus.REJECTED;
 
-import coinapp.domain.model.Wallet;
-import coinapp.domain.repository.WalletRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+
+import coinapp.domain.model.Wallet;
+import coinapp.domain.repository.WalletRepository;
 
 /**
  * WalletService
@@ -28,10 +28,10 @@ public class WalletService {
   }
 
   public Wallet creditWallet(Wallet wallet) {
-    Wallet existingWallet = walletRepository.findById(wallet.getId()).orElse(null);
+    Optional<Wallet> optionalWallet = walletRepository.findById(wallet.getId());
 
     // create new
-    if (null == existingWallet) {
+    if (optionalWallet.isEmpty()) {
       wallet.setVersion(1);
       walletRepository.save(wallet);
 
@@ -39,6 +39,8 @@ public class WalletService {
 
       return wallet;
     }
+
+    final Wallet existingWallet = optionalWallet.get();
 
     // same transaction, do nothing
     if (wallet.getTransaction().getId().equals(existingWallet.getTransaction().getId())) {
@@ -59,13 +61,15 @@ public class WalletService {
   }
 
   public Wallet debitWallet(Wallet wallet) {
-    Wallet existingWallet = walletRepository.findById(wallet.getId()).orElse(null);
+    Optional<Wallet> optionalWallet = walletRepository.findById(wallet.getId());
 
     // no balance
-    if (null == existingWallet) {
+    if (optionalWallet.isEmpty()) {
       wallet.getTransaction().setStatus(REJECTED);
       return wallet;
     }
+
+    final Wallet existingWallet = optionalWallet.get();
 
     // same transaction, do nothing
     if (wallet.getTransaction().getId().equals(existingWallet.getTransaction().getId())) {
